@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ravebrite</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag    'application', media: 'all' %>
+    <%= javascript_include_tag 'application' %>
+    <script type="text/javascript">
+      window.festivalConfetti = "<%= image_url('samuel-regan-asante-3BcNKoySAq0-unsplash.jpg')%>"
+      window.coachella = "<%= image_url('coachella.png')%>"
+      window.rave = "<%= image_url('rave.jpg')%>"
+      window.raph = "<%= image_url('raph.jpg')%>"
+      window.chase = "<%= image_url('chase.jpg')%>"
+      window.jack = "<%= image_url('jack.jpg')%>"
+      window.ezoo = "<%= image_url('ezoo.jpg')%>"
+    </script>
+
+    <meta property="og:title" content="Ravebrite" />
+    <meta property='og:image' content="<%= image_url('Screenshot_3.png') %>" />
+    <meta property='og:description' 
+      content="Ravebrite is an Eventbrite clone focused on EDM related events with full CRUD functionality." 
+    />
+    <meta property="og:url" content="<%= request.base_url %>/#/"/>
+    <%= favicon_link_tag asset_path('dazzle.png') %>
+    <script src="https://kit.fontawesome.com/7d4e0e22d2.js" crossorigin="anonymous"></script>
+  </head>
+
+  <body>
+    <%= yield %>
+  </body>
+</html>

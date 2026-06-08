@@ -1,67 +1,48 @@
+
 # Ravebrite
 
 ![Ravebrite screenshot](https://user-images.githubusercontent.com/63977819/125955348-0469447a-2bbe-4a55-a5ae-4a975039712b.png)
 
-Ravebrite is an Eventbrite clone focused on EDM events. Users can browse events, filter by genre, sign up, purchase tickets, bookmark events, and create and manage their own events.
+Ravebrite is an Eventbrite clone where users will be able to search and register for EDM related events. Users will have the ability to create and host their own events as well.
 
-## Technologies
+# Technologies Used
 
-* React / Redux
-* Ruby on Rails 6.1
+* React/Redux
+* Ruby on Rails
 * PostgreSQL
-* Webpack
-* Active Storage (local disk in development)
+* Heroku
 
-## Prerequisites
+![image](https://user-images.githubusercontent.com/63977819/125955647-761b9b0d-0236-4e5c-96d6-cede7362b957.png)
 
-* **Ruby** 3.2.10 (see `.ruby-version`)
-* **Node.js** 18+ and npm
-* **PostgreSQL** 15+
+## Running Locally
 
-Recommended: [rbenv](https://github.com/rbenv/rbenv) for Ruby version management.
+### Prerequisites
 
-## Local setup
+* Ruby 3.2.10 (see `.ruby-version`)
+* Node.js 18+ and npm
+* PostgreSQL 15+
 
-### 1. Install Ruby
+### Setup
 
 ```bash
 rbenv install 3.2.10
 cd Ravebrite-main
 rbenv local 3.2.10
-```
 
-### 2. Install dependencies
-
-```bash
 bundle install
 npm install
 npm run build
-```
 
-### 3. Start PostgreSQL
-
-```bash
 # macOS with Homebrew
 brew services start postgresql@15
-```
 
-### 4. Set up the database
-
-```bash
 bundle exec rails db:create db:schema:load db:seed
-```
-
-### 5. Start the server
-
-```bash
 bundle exec rails server
 ```
 
 Open **http://localhost:3000** in your browser.
 
-## Demo account
-
-After seeding, you can log in with:
+### Demo account
 
 | Email | Password |
 |-------|----------|
@@ -69,31 +50,66 @@ After seeding, you can log in with:
 
 Other seeded users (e.g. `raph@ex.com`) use password `123456`.
 
-## Development
-
-Rebuild the frontend after changing React code:
-
-```bash
-npm run webpack
-```
-
-Or for a one-off production build:
-
-```bash
-npm run build
-```
-
-Event images are stored on local disk in development (`storage/`). No AWS credentials are required to run locally.
-
 ## Features
 
-* Browse all events with genre filtering
-* Sign up and log in
-* View event detail pages
-* Purchase tickets (1–4 per order) and view owned tickets
-* Bookmark events ("Likes")
-* Create, edit, and delete hosted events
-* Upload event photos via Active Storage
+* Users will be able to see all events currently in our database upon entering the site
+![home](https://user-images.githubusercontent.com/63977819/125956752-505ff931-6f6e-41f4-8860-7e8c5e5eb06f.gif)
 
-![Features overview](https://user-images.githubusercontent.com/63977819/125955647-761b9b0d-0236-4e5c-96d6-cede7362b957.png)
-# ravebrite-restored
+* Users can sign up or log in
+![login](https://user-images.githubusercontent.com/63977819/125958716-7b261740-eac2-4acd-812f-3065c356b36f.gif)
+
+* Users can view event pages
+![event_show](https://user-images.githubusercontent.com/63977819/125958741-9d12bc45-2e8b-438c-aa41-a5fbc33994b9.gif)
+
+* Users will be able to purchase tickets and view all tickets they own
+![registration](https://user-images.githubusercontent.com/63977819/130277389-45de417d-4376-46a3-bba5-fdddf1b63511.gif)
+
+```javascript
+purchaseTicket(registration){
+        const {createRegistration, currentUserId, event, fetchRegistrations} = this.props
+        if (currentUserId) {
+            for (let i = 0; i < this.state.ticketAmount; i++){
+                createRegistration({user_id: currentUserId, event_id: event.id})
+            }
+            fetchRegistrations()
+            this.props.history.push(`/users/${currentUserId}/registrations`)
+        } else {
+            this.props.history.push('/login');
+        }
+    }
+```
+This function will execute the action creator depending on the amount of tickets the user wants to purchase.  Upon purchase, the user will be redirected to the show page of their tickets to see their newly purchased tickets.  One issue was that not all of the tickets were able to show up on the page upon redirect, so fetching all of the tickets/registrations before the redirect ensured that they would show up.  Additionally, this function will check if the user is logged in or not before purchasing; if they are not, they will be redirected to the login page before being able to purchase their tickets.  
+
+* Users can create and manage their own events
+![create_event](https://user-images.githubusercontent.com/63977819/125959455-6387190c-52f2-44c8-b647-a279de88d665.gif)
+
+* Active Storage and AWS S3 Hosting
+```javascript
+handleSubmit(e) {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('event[title]', this.state.event.title);
+        ...
+        if (this.state.photoFile) {
+            formData.append('event[photo]', this.state.photoFile);
+        }
+
+        this.props.processForm(formData, this.props.eventId)
+            .then((res) => this.props.history.push(`/events/${res.event.id}`))
+    }
+
+handleFile(e) {
+        const file = e.currentTarget.files[0]
+        const fileReader = new FileReader();
+        fileReader.onloadend = () => {
+            this.setState({photoFile: file, photoUrl: fileReader.result})
+        }
+
+        if (file) {
+            fileReader.readAsDataURL(file);
+        } else {
+            this.setState({ photoFile: null, photoUrl: "" });
+        }
+    }
+```
+Users can upload their own image to attach to their event.  Ravebrite is able to access all image previews and event images through AWS S3 Hosting.  Using the properties photoFile and photoUrl, each event, registration, bookmark, and like will be able to display the corresponding image.  

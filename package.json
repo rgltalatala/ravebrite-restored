@@ -1,0 +1,43 @@
+{
+  "name": "ravebrite",
+  "private": true,
+  "dependencies": {
+    "@babel/core": "^7.14.6",
+    "@babel/preset-env": "^7.14.7",
+    "@babel/preset-react": "^7.14.5",
+    "babel-loader": "^8.2.2",
+    "moment": "^2.29.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-redux": "^7.2.4",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0",
+    "redux": "^4.1.0",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.3.0",
+    "webpack": "^5.42.0",
+    "webpack-cli": "^4.7.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode=production",
+    "webpack": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode=development --watch",
+    "heroku-postbuild": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode=production"
+  },
+  "description": "Ravebrite is an Eventbrite clone where users will be able to search and register for EDM related events. Users will have the ability to create and host their own events as well.",
+  "version": "1.0.0",
+  "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.14.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rgltalatala/Ravebrite.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rgltalatala/Ravebrite/issues"
+  },
+  "homepage": "https://github.com/rgltalatala/Ravebrite#readme"
+}
